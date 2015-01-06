@@ -6,11 +6,8 @@ if __name__ == "__main__":
     low=0
     high=10
     _ave1=0
-    ave1=0
     _ave2=0
-    ave2=0
     counter=0
-    sec=0
     
     with open('sample_9_csv.log', 'r') as f:
         reader = csv.reader(f)
