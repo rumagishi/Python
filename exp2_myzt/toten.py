@@ -1,53 +1,48 @@
 import csv
-from fetchtime import fetchtime
+from fetchtime import *
+from toten import *
 
-low=0
-high=10
-_ave=0
-ave=0
-counter=0
-sec=0
-
-with open('sample_9_csv.log', 'r') as f:
-    reader = csv.reader(f)
-    header = next(reader)
-
-    for row in reader:
-        if row[3] == '0':
-            value = int(row[1])
-            if value<0: 
-                value += 256
+if __name__ == "__main__":
+    low=0
+    high=10
+    _ave1=0
+    ave1=0
+    _ave2=0
+    ave2=0
+    counter=0
+    sec=0
+    
+    with open('sample_9_csv.log', 'r') as f:
+        reader = csv.reader(f)
+        header = next(reader)
+    
+        for row in reader:
+            if row[3] == '0':
+                row[1] = modify_level(row[1])
+                row[2] = modify_level(row[2])
+    
+                sec = fetchtime(row[0])
+                if low<=sec<high:
+                    _ave1 += float(row[1])
+                    _ave2 += float(row[2])
+                    counter += 1
+                elif high<=sec:
+                    ave1 = _ave1 / counter
+                    ave2 = _ave2 / counter
+                    _ave1 = float(row[1])
+                    _ave2 = float(row[2])
+                    counter = 1
+                    low += 10
+                    high += 10
+                    print(str(low) + "," + str(ave1) + "," + str(ave2))
             else:
                 pass
-            value = value / 2 - 121
-            row[1] = str(value)
 
-            value = int(row[2])
-            if value<0: 
-                value += 256
-            else:
-                pass
-            value = value / 2 - 121
-            row[2] = str(value)
-
-            sec = fetchtime(row[0])
-            if low<=sec<high:
-                _ave += float(row[1])
-                counter += 1
-            elif high<=sec:
-                ave = _ave / counter
-                _ave = float(row[1])
-                counter = 1
-                low += 10
-                high += 10
-            #if sec%10 == 0 and sec != 0:
-                print(str(low) + "," + str(ave))
-        else:
-            pass
-        #print(','.join(row))
-        #if time%10 == 0:
-        #    _ave = 0 
-        #    low += 10
-        #    high += 10
-        #else:
-        #    pass
+def modify_level(_row):
+    value = int(_row)
+    if value<0: 
+        value += 256
+    else:
+        pass
+    value = value / 2 - 121
+    return str(value)
