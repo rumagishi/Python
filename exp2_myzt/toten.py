@@ -1,4 +1,5 @@
 import csv
+import sys
 from fetchtime import *
 from toten import *
 
@@ -8,13 +9,15 @@ if __name__ == "__main__":
     _ave1=0
     _ave2=0
     counter=0
+
+    argvs = sys.argv
     
-    with open('sample_9_csv.log', 'r') as f:
+    with open(argvs[1], 'r') as f:
         reader = csv.reader(f)
         header = next(reader)
     
         for row in reader:
-            if row[3] == '0':
+            if len(row)==4 and row[3]=='0':
                 row[1] = modify_level(row[1])
                 row[2] = modify_level(row[2])
     
@@ -31,9 +34,11 @@ if __name__ == "__main__":
                     counter = 1
                     low += 10
                     high += 10
-                    print(str(low) + "," + str(ave1) + "," + str(ave2))
-            else:
-                pass
+                    print(str(low) + "," + str(ave1) + "," + str(ave2) + "," + str(row[3]))
+                else:
+                    _ave1 += _ave1 / counter
+                    _ave2 += _ave2 / counter
+                
 
 def modify_level(_row):
     value = int(_row)
