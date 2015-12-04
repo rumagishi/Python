@@ -39,7 +39,7 @@ def solve_c(l, b):
             if j > i-1:
                 pass
             else:
-                sum = l[i][j]*c[j]
+                sum += l[i][j]*c[j]
         c[i] = ( b[i]-sum )/l[i][i]
     return c
 
@@ -51,7 +51,7 @@ def solve_x(lt, c):
             if j > len(lt):
                 pass
             else:
-                sum = lt[i][j]*x[j]
+                sum += lt[i][j]*x[j]
         x[i] = ( c[i]-sum )/lt[i][i]
     return x
 
