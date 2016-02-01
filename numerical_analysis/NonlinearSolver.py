@@ -3,7 +3,6 @@
 
 import math
 import random
-import numpy as np
 from sympy import *
 
 ### >>> from NonlinearSolver import *; solver = NonlinearSolver()
@@ -35,7 +34,7 @@ class NonlinearSolver():
             b, a = self.__find_pair(f)
             def go(b, a, iteration):
                 c = (b+a)/2
-                print("iteration {0}: \tx={1:6.15f},\tf(x)={2:6.15f}".format(iteration, float(c), float(f.subs([(x, c)]))))
+                print("iteration {0}: \t[{3:6.15f}, {4:6.15f}]\tx={1:6.15f},\tf(x)={2:6.15f}".format(iteration, float(c), float(f.subs([(x, c)])), a, b))
                 return c if abs(b-a)<=2*epsilon else (go(c, a, iteration+1) if self.__judge(c, a, f) else go(b, c, iteration+1))
             return go(b, a, 0)
         except RuntimeError:
@@ -43,44 +42,44 @@ class NonlinearSolver():
 
     # ニュートン法
     def newton_method(self, f, initial, epsilon, iter):
-            a = initial
-            f_dash = diff(f, self.x)
-            def go(a, iteration):
-                try:
-                    x_delta = - float((f.subs([(x, a)]) / f_dash.subs([(x,a)])))
-                    b = a + x_delta
-                    print("iteration {0}: \tx={1:6.15f},\tf(x)={2:6.15f}".format(iteration, float(b), float(f.subs([(x, b)]))))
-                    return float(b) if abs(x_delta)<=epsilon or iter<=iteration else go(b, iteration+1)
-                except RuntimeError:
-                    print("~~~~f(x)=0となる解が存在しないかもしれない~~~~")
-            return go(a, 0)
+        a = initial
+        f_dash = diff(f, self.x)
+        def go(a, iteration):
+            try:
+                x_delta = - float((f.subs([(x, a)]) / f_dash.subs([(x,a)])))
+                b = a + x_delta
+                print("iteration {0}: \tx={1:6.15f},\tf(x)={2:6.15f}".format(iteration, float(b), float(f.subs([(x, b)]))))
+                return float(b) if abs(x_delta)<=epsilon or iter<=iteration else go(b, iteration+1)
+            except RuntimeError:
+                print("~~~~f(x)=0となる解が存在しないかもしれない~~~~")
+        return go(a, 0)
 
     # 割線法
     def secant_method(self, f, initial_0, initial_1, epsilon, iter):
-            a = initial_0
-            b = initial_1
-            def go(b, a, iteration):
-                try:
-                    x_delta = - float(((b-a)*f.subs([(x, b)]))/(f.subs([(x, b)])-f.subs([(x, a)])))
-                    c = b + x_delta
-                    print("iteration {0}: \tx={1:6.15f},\tf(x)={2:6.15f}".format(iteration, float(c), float(f.subs([(x, c)]))))
-                    return float(c) if abs(x_delta)<=epsilon or iter<=iteration else go(c, b, iteration+1)
-                except RuntimeError:
-                    print("~~~~f(x)=0となる解が存在しないかもしれない~~~~")
-            return go(b, a, 0)
+        a = initial_0
+        b = initial_1
+        def go(b, a, iteration):
+            try:
+                x_delta = - float(((b-a)*f.subs([(x, b)]))/(f.subs([(x, b)])-f.subs([(x, a)])))
+                c = b + x_delta
+                print("iteration {0}: \tx={1:6.15f},\tf(x)={2:6.15f}".format(iteration, float(c), float(f.subs([(x, c)]))))
+                return float(c) if abs(x_delta)<=epsilon or iter<=iteration else go(c, b, iteration+1)
+            except RuntimeError:
+                print("~~~~f(x)=0となる解が存在しないかもしれない~~~~")
+        return go(b, a, 0)
 
 x = symbols("x")
 
 if __name__ == '__main__':
-        solver = NonlinearSolver()
-        print("===Bisection method===")
-        print("x={0}".format(solver.bisection_method(x**2+3*x+1, 1, 0.00001)))
-        print("===================")
+    solver = NonlinearSolver()
+    print("===Bisection method===")
+    print("x={0}".format(solver.bisection_method(x**2+3*x+1, 1, 0.00001)))
+    print("===================")
 
-        print("===Newton method===")
-        print("x={0}".format(solver.newton_method(x**2+3*x+1, 2, 0.00001, 100)))
-        print("===================")
+    print("===Newton method===")
+    print("x={0}".format(solver.newton_method(x**2+3*x+1, 2, 0.00001, 100)))
+    print("===================")
 
-        print("===Secant method===")
-        print("x={0}".format(solver.secant_method(x**2+3*x+1, 2, 0.00001, 100)))
-        print("===================")
+    print("===Secant method===")
+    print("x={0}".format(solver.secant_method(x**2+3*x+1, 2, 0.00001, 100)))
+    print("===================")
